@@ -98,6 +98,7 @@ run_test("empty_narrow_html", ({mock_template}) => {
             {query_word: "search", is_stop_word: false},
             {query_word: "a", is_stop_word: true},
         ],
+        size: 2,
     };
     actual_html = empty_narrow_html(
         "This is a title",
@@ -123,6 +124,7 @@ run_test("empty_narrow_html", ({mock_template}) => {
         has_stop_word: false,
         stream_query: "hello world",
         query_words: [{query_word: "searchA", is_stop_word: false}],
+        size: 1,
     };
     actual_html = empty_narrow_html(
         "This is a title",
@@ -146,6 +148,7 @@ run_test("empty_narrow_html", ({mock_template}) => {
         has_stop_word: false,
         topic_query: "hello",
         query_words: [{query_word: "searchB", is_stop_word: false}],
+        size: 1,
     };
     actual_html = empty_narrow_html(
         "This is a title",
@@ -160,6 +163,25 @@ run_test("empty_narrow_html", ({mock_template}) => {
             You searched for:
             <span>topic: hello</span>
                 <span>searchB</span>
+    </div>
+</div>
+`,
+    );
+
+    const search_data_with_long_query = {
+        has_stop_word: false,
+        query_words: [],
+        size: 0,
+        query_words_shortened: "this is a really big query and should not be fully displayed...",
+    };
+    actual_html = empty_narrow_html("No search results.", undefined, search_data_with_long_query);
+    assert.equal(
+        actual_html,
+        `<div class="empty_feed_notice">
+    <h4 class="empty-feed-notice-title"> No search results. </h4>
+    <div class="empty-feed-notice-description">
+            You searched for:
+            <span>this is a really big query and should not be fully displayed...</span>
     </div>
 </div>
 `,
@@ -556,6 +578,7 @@ run_test("show_search_stopwords", ({mock_template}) => {
             {query_word: "about", is_stop_word: true},
             {query_word: "grail", is_stop_word: false},
         ],
+        size: 3,
     };
     message_lists.set_current(undefined);
     set_filter([["search", "what about grail"]]);
@@ -573,6 +596,7 @@ run_test("show_search_stopwords", ({mock_template}) => {
             {query_word: "about", is_stop_word: true},
             {query_word: "grail", is_stop_word: false},
         ],
+        size: 3,
     };
     set_filter([
         ["stream", "streamA"],
@@ -593,6 +617,7 @@ run_test("show_search_stopwords", ({mock_template}) => {
             {query_word: "about", is_stop_word: true},
             {query_word: "grail", is_stop_word: false},
         ],
+        size: 3,
     };
     set_filter([
         ["stream", "streamA"],
